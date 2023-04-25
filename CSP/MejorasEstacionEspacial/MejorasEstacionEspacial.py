@@ -68,31 +68,36 @@ def ControlarCantidad(variables,values):
 
 #OJO CON LIMITAR DE ESTA MANERA. 
 domains["mejora1"].remove(("exp_plantas",80,250))
-domains["mejora2"].remove(("exp_fisicos",80,250))
-domains["mejora3"].remove(("exp_fisicos",80,250))
+domains["mejora2"].remove(("LabExpFisicos",80,250))
+domains["mejora3"].remove(("LabExpFisicos",80,250))
 #En este caso no se puede  podría pasar:
 #1 = "exp_fisicos"
 #2 = "exp_plantas"
 # Y no sería compatible
 
 #Si seguimos insistiendo en modificarl os dominios, la opción sería:
-#domains["mejora2"].remove(("exp_plantas",80,250))
-#domains["mejora2"].remove(("exp_fisicos",80,250))
+#domains["mejora2"].remove(("LabPlantas",80,250))
+#domains["mejora2"].remove(("LabExpFisicos",80,250))
 
-#domains["mejora3"].remove(("exp_planta",80,250))
-#domains["mejora3"].remove(("exp_fisicos",80,250))
+#domains["mejora3"].remove(("LabPlantas",80,250))
+#domains["mejora3"].remove(("LabExpFisicos",80,250))
 
-for x in problem_variables:
-    contraints.append((x),ControlarCantidad)
-    dipositivos: values
-    cantidad= 0
-    #El for es con variable o con problem_variables?
-    for x in values:
-        #De cada dispositivo sumo el monto
-        if  values[x] == 'LabPlantas':
+#Otra manera de hacerlo
+def different(variables,values):
+    improv1, improv2 = values
+    #Nombre de los experimentos.
+    name1, name2= improv1[0], improv2[0]
+    #El set no importa el orden, entonces puedo comparar ambos valores.
+    if set(name1,name2) == set(LabExpFisicos,LabPlantas):
+        return False
+    return True
 
-    #Si el monto total de equipamiento no supera 150 millones, entonces la restriccion se cumple(Devuelve True)    
-    return cantidad<=1000
+
+for variable1,variable2 in combinations(problem_variables,2):
+    constraints.append((variable1,variable2),different)
+
+
+
 
 def ControlarCompatibles_LabFisico_Plantas(variables, values):
     pass
